@@ -1,0 +1,45 @@
+{
+  "name": "clearbold/craft-color-palette",
+  "description": "",
+  "version": "0.1",
+  "type": "craft-plugin",
+  "homepage": "",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Mark Reeves",
+      "homepage": "http://reeves.studio"
+    }
+  ],
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "design",
+    "color",
+    "palette",
+    "theme",
+    "themes"
+  ],
+  "require": {
+    "craftcms/cms": "^3.6.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "clearbold\\colorpalette\\": "src/"
+    }
+  },
+  "support": {
+    "docs": "https://github.com/clearbold/craft-color-palette",
+    "source": "https://github.com/clearbold/craft-color-palette",
+    "issues": "https://github.com/clearbold/craft-color-palette/issues"
+  },
+  "extra": {
+    "name": "Color Palette by Clearbold",
+    "handle": "colorpalette",
+    "hasCpSection": true,
+    "developer": "Clearbold",
+    "developerUrl": "https://clearbold.com/",
+    "class": "clearbold\\colorpalette\\Plugin"
+  }
+}
