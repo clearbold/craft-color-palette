@@ -86,6 +86,7 @@ class ColorPaletteController extends BaseCpController
             ]
         ];
 
+        // Uncomment to load test data
         //$colorPalette = [
         //    "palette" => [
         //        "collections" => [
