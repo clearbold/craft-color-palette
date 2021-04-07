@@ -1,3 +1,7 @@
+## 1.0.2 - 2020-04-07
+
+* Fixed empty theme error if collections or themes are deleted without updating field
+
 ## 1.0.1 - 2020-04-07
 
 * .gitignored .sass-cache

@@ -48,18 +48,28 @@ abstract class Theme extends SavableComponent implements ThemeInterface
 
     public function __toString(): string
     {
-        $name = $this->themeRecord();
-        return $name ? $name['handle'] : '';
+        $themeRecord = $this->themeRecord();
+        return $themeRecord ? $themeRecord['handle'] : '';
     }
 
     public function collection()
     {
-        return $this->collectionRecord();
+        $collectionRecord = $this->collectionRecord();
+        return $collectionRecord ? $collectionRecord : [
+            'guid' => $this->guid,
+            'name' => '',
+            'handle' => ''
+        ];
     }
 
     public function theme()
     {
-        return $this->themeRecord();
+        $themeRecord = $this->themeRecord();
+        return $themeRecord ? $themeRecord : [
+            'guid' => $this->guid,
+            'name' => '',
+            'handle' => ''
+        ];
     }
 
     public function colors()

@@ -1,7 +1,7 @@
 {
   "name": "clearbold/craft-color-palette",
   "description": "Configure color themes. Select color themes for page or component styles via entry fields. Output CSS class names or color values in your templates.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "craft-plugin",
   "homepage": "https://clearbold.com",
   "license": "proprietary",

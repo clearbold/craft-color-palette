@@ -116,10 +116,10 @@ class ColorPalette extends Field implements PreviewableFieldInterface
         $id = Html::input($name);
 
         $forms = array();
-        $forms[] = array(
-            'label' => 'None',
-            'value' => 'none'
-        );
+        //$forms[] = array(
+        //    'label' => 'None',
+        //    'value' => 'none'
+        //);
 
         $tableSchema = Craft::$app->db->schema->getTableSchema('{{%colorpalette_themes}}');
         if ($tableSchema !== null && strlen($this->collection) > 0) {
