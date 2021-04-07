@@ -24,11 +24,6 @@
 {% import "_includes/forms" as forms %}
 
 {% block content %}
-{#    {{ actionInput('plugin-handle/controller/action') }}#}
-{#    <div>#}
-{#        <p>Be sure to hit the Save button after you&rsquo;ve configured your colors.</p>#}
-{#    </div>#}
-{#    <hr />#}
     <div class="clearbold-styles colorpalette-configurator">
         <div class="input ltr">
             <div id="colorpalette-collections">
@@ -66,26 +61,6 @@
                             </li>
                         </template>
                     </draggable>
-                    {#<ul class="config-parent-items" :class="{ loaded: showFields }">#}
-                    {#    <li#}
-                    {#        @click="selectCollection(index)"#}
-                    {#        :class="{ 'config-active': index==selectedCollection }"#}
-                    {#        v-for="(collection, index) in collections"#}
-                    {#    >#}
-                    {#        <div>#}
-                    {#            <div>${ collection.name }</div>#}
-                    {#            <div class="smalltext light code">${ collection.handle }</div>#}
-                    {#        </div>#}
-                    {#        <div class="config-actions">#}
-                    {#            <button#}
-                    {#                @click.stop="setCollectionName(index)"#}
-                    {#                class="settings icon"#}
-                    {#                title="Settings"#}
-                    {#            ></button>#}
-                    {#            <button class="move icon" title="Reorder"></button>#}
-                    {#        </div>#}
-                    {#    </li>#}
-                    {#</ul>#}
                     <div class="wrapper">
                         <button
                             @click="createCollection"
@@ -130,26 +105,6 @@
                             </li>
                         </template>
                     </draggable>
-                    {#<ul class="config-parent-items" :class="{ loaded: showFields }">#}
-                    {#    <li#}
-                    {#        @click="selectTheme(index)"#}
-                    {#        :class="{ 'config-active': index==selectedTheme }"#}
-                    {#        v-for="(theme, index) in collections[selectedCollection].themes"#}
-                    {#    >#}
-                    {#        <div>#}
-                    {#            <div>${ theme.name }</div>#}
-                    {#            <div class="smalltext light code">${ theme.handle }</div>#}
-                    {#        </div>#}
-                    {#        <div class="config-actions">#}
-                    {#            <button#}
-                    {#                @click.stop="setThemeName(index)"#}
-                    {#                class="settings icon"#}
-                    {#                title="Settings"#}
-                    {#            ></button>#}
-                    {#            <button class="move icon" title="Reorder"></button>#}
-                    {#        </div>#}
-                    {#    </li>#}
-                    {#</ul>#}
                     <div class="wrapper">
                         <button
                             @click="createTheme"
@@ -279,10 +234,7 @@
                                             type="color"
                                         />
                                     </label>
-                                    {#<button>#}
-                                    {#    ${ color.color }#}
-                                    {#</button>#}
-                                    <div v-if="(index > 0)" class="a11y-score">#.#</div>
+                                    {#<div v-if="(index > 0)" class="a11y-score">#.#</div>#}
                                 </td>
                                 <td class="color-opacity code light"><input type="number" min="0" max="1" step="0.05" :value="color.alpha" /></td>
                                 <td class="color-widget">

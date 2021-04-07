@@ -1,3 +1,8 @@
+## 1.0.1 - 2020-04-07
+
+* .gitignored .sass-cache
+* Removed contrast bubble from UI
+
 ## 1.0 - 2020-04-07
 
 * Completed v1
