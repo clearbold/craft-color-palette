@@ -1,0 +1,15 @@
+{% import "_includes/forms" as forms %}
+
+{% set collectionOptions = [] %}
+{% for collection in field.collections %}
+    {% set collectionOptions = collectionOptions|merge([{ label: collection.name, value: collection.guid }]) %}
+{% endfor %}
+
+{{ forms.selectField({
+    label: 'Collections'|t('craft-color-palette'),
+    instructions: 'Which collection’s themes can be chosen.'|t('craft-color-palette'),
+    id: 'collection',
+    name: 'collection',
+    options: collectionOptions,
+    value: field.collection
+}) }}

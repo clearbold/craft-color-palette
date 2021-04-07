@@ -1,0 +1,25 @@
+{% extends "_layouts/cp" %}
+{% set title = "Copy & paste SCSS/LESS"|t('craft-color-palette') %}
+{% set selectedSubnavItem = "css" %}
+
+{% set crumbs = [
+    { label: 'Color Palette'|t('craft-color-palette'), url: url('colorpalette') }
+] %}
+
+{% do view.registerAssetBundle("clearbold\\colorpalette\\ColorPaletteBundle") %}
+
+{% block content %}
+<div class="clearbold-styles">
+    <div class="code code-block">
+<pre>
+{% for collection in craft.colorpalette.collections %}
+{% for theme in collection.themes %}
+{% for color in theme.colors %}
+${{ collection.handle }}-{{ theme.handle }}-{{ color.handle }}: {{ color.getRgba() }};
+{% endfor %}
+{% endfor %}
+{% endfor %}
+</pre>
+    </div>
+</div>
+{% endblock content %}

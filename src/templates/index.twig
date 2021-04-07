@@ -1,0 +1,355 @@
+{% extends "_layouts/cp" %}
+{% set title = "Color Palette"|t('craft-color-palette') %}
+{% set selectedSubnavItem = "configure" %}
+
+{% do view.registerAssetBundle("clearbold\\colorpalette\\ColorPaletteBundle") %}
+{#{% set resources = craft.app.assetManager.getPublishedUrl('@clearbold/colorpalette/resources') %}#}
+
+{% set fullPageForm = false %}
+
+{% block actionButton %}
+    <form id="main-form" method="post" accept-charset="UTF-8" data-saveshortcut="" data-confirm-unload>
+        {{ csrfInput() }}
+        {{ actionInput('colorpalette/color-palette/save') }}
+        {{ redirectInput('admin/colorpalette') }}
+        <input id="palette-field" type="hidden" name="palette" value="" />
+        <button
+                @click="savePalette()"
+                class="btn submit">
+            {{ 'Save'|t('craft-color-palette') }}
+        </button>
+    </form>
+{% endblock %}
+
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+{#    {{ actionInput('plugin-handle/controller/action') }}#}
+{#    <div>#}
+{#        <p>Be sure to hit the Save button after you&rsquo;ve configured your colors.</p>#}
+{#    </div>#}
+{#    <hr />#}
+    <div class="clearbold-styles colorpalette-configurator">
+        <div class="input ltr">
+            <div id="colorpalette-collections">
+                <div id="colorpalette-collections-heading" class="heading wrapper">
+                    Collections
+                </div>
+                <div aria-labelledby="colorpalette-collections-heading">
+                    <draggable
+                        v-model="collections"
+                        tag="ul"
+                        item-key="id"
+                        class="config-parent-items"
+                        :class="{ loaded: showFields }"
+                        @start=""
+                        @end="selectedCollection = 0"
+                        handle=".move"
+                    >
+                        <template #item="{ element }">
+                            <li
+                                @click="selectCollection(collections.indexOf(element))"
+                                :class="{ 'config-active': collections.indexOf(element)==selectedCollection }"
+                            >
+                                <div>
+                                    <div>${ element.name }</div>
+                                    <div class="smalltext light code">${ element.handle }</div>
+                                </div>
+                                <div class="config-actions">
+                                    <button
+                                            @click.stop="setCollectionName(collections.indexOf(element))"
+                                            class="settings icon"
+                                            title="Settings"
+                                    ></button>
+                                    <span class="move icon" title="Reorder"></span>
+                                </div>
+                            </li>
+                        </template>
+                    </draggable>
+                    {#<ul class="config-parent-items" :class="{ loaded: showFields }">#}
+                    {#    <li#}
+                    {#        @click="selectCollection(index)"#}
+                    {#        :class="{ 'config-active': index==selectedCollection }"#}
+                    {#        v-for="(collection, index) in collections"#}
+                    {#    >#}
+                    {#        <div>#}
+                    {#            <div>${ collection.name }</div>#}
+                    {#            <div class="smalltext light code">${ collection.handle }</div>#}
+                    {#        </div>#}
+                    {#        <div class="config-actions">#}
+                    {#            <button#}
+                    {#                @click.stop="setCollectionName(index)"#}
+                    {#                class="settings icon"#}
+                    {#                title="Settings"#}
+                    {#            ></button>#}
+                    {#            <button class="move icon" title="Reorder"></button>#}
+                    {#        </div>#}
+                    {#    </li>#}
+                    {#</ul>#}
+                    <div class="wrapper">
+                        <button
+                            @click="createCollection"
+                            type="button"
+                            class="btn add icon"
+                        >New collection</button>
+                    </div>
+                </div>
+            </div>
+            <div id="colorpalette-themes">
+                <div id="colorpalette-themes-heading" class="heading wrapper">
+                    Themes
+                </div>
+                <div aria-labelledby="colorpalette-themes-heading">
+                    <draggable
+                            v-model="collections[selectedCollection].themes"
+                            tag="ul"
+                            item-key="id"
+                            class="config-parent-items"
+                            :class="{ loaded: showFields }"
+                            @start=""
+                            @end="selectedTheme = 0"
+                            handle=".move"
+                    >
+                        <template #item="{ element }">
+                            <li
+                                @click="selectTheme(collections[selectedCollection].themes.indexOf(element))"
+                                :class="{ 'config-active': collections[selectedCollection].themes.indexOf(element)==selectedTheme }"
+                            >
+                                <div>
+                                    <div>${ element.name }</div>
+                                    <div class="smalltext light code">${ element.handle }</div>
+                                </div>
+                                <div class="config-actions">
+                                    <button
+                                        @click.stop="setThemeName(collections[selectedCollection].themes.indexOf(element))"
+                                        class="settings icon"
+                                        title="Settings"
+                                    ></button>
+                                    <span class="move icon" title="Reorder"></span>
+                                </div>
+                            </li>
+                        </template>
+                    </draggable>
+                    {#<ul class="config-parent-items" :class="{ loaded: showFields }">#}
+                    {#    <li#}
+                    {#        @click="selectTheme(index)"#}
+                    {#        :class="{ 'config-active': index==selectedTheme }"#}
+                    {#        v-for="(theme, index) in collections[selectedCollection].themes"#}
+                    {#    >#}
+                    {#        <div>#}
+                    {#            <div>${ theme.name }</div>#}
+                    {#            <div class="smalltext light code">${ theme.handle }</div>#}
+                    {#        </div>#}
+                    {#        <div class="config-actions">#}
+                    {#            <button#}
+                    {#                @click.stop="setThemeName(index)"#}
+                    {#                class="settings icon"#}
+                    {#                title="Settings"#}
+                    {#            ></button>#}
+                    {#            <button class="move icon" title="Reorder"></button>#}
+                    {#        </div>#}
+                    {#    </li>#}
+                    {#</ul>#}
+                    <div class="wrapper">
+                        <button
+                            @click="createTheme"
+                            class="btn add icon"
+                            type="button"
+                        >New theme</button>
+                    </div>
+                </div>
+            </div>
+            <div id="colorpalette-colors">
+                <div id="colorpalette-colors-heading" class="heading wrapper">
+                    Colors
+                </div>
+                <div class="wrapper colors" :class="{ loaded: showFields }" aria-labelledby="colorpalette-colors-heading">
+                    <table border="0" cellpadding="0" cellspacing="0" class="ui-table">
+                        <thead>
+                            <tr>
+                                <th class="color-name">Name</th>
+                                <th class="color-handle">Handle</th>
+                                <th class="color-button">Color</th>
+                                <th class="color-opacity">Alpha</th>
+                                <th class="color-widget"></th>
+                            </tr>
+                        </thead>
+                        <tbody v-is="'draggable'"
+                            v-model="collections[selectedCollection].themes[selectedTheme].colors"
+                            tag="tbody"
+                            item-key="id"
+                            @start=""
+                            @end="sortColors()"
+                            handle=".move"
+                            v-if="selectedTheme == 0"
+                        >
+                            <template #item="{ element }">
+                                <tr>
+                                    <td class="color-name">
+                                        <input
+                                            @blur="resetNewColor(collections[selectedCollection].themes[0].colors.indexOf(element))"
+                                            @change="updateColorNames(collections[selectedCollection].themes[0].colors.indexOf(element))"
+                                            :readonly="selectedTheme > 0"
+                                            v-model="element.name"
+                                            type="text"
+                                        />
+                                    </td>
+                                    <td class="color-handle">
+                                        <input
+                                            :readonly="selectedTheme > 0"
+                                            v-if="newColor && (collections[selectedCollection].themes[0].colors.indexOf(element) == collections[selectedCollection].themes[selectedTheme].colors.length-1)"
+                                            v-model="newColorHandle"
+                                            class="code"
+                                            type="text"
+                                        />
+                                        <input
+                                            @change="updateColorHandles(collections[selectedCollection].themes[0].colors.indexOf(element))"
+                                            :readonly="selectedTheme > 0"
+                                            v-else
+                                            v-model="element.handle"
+                                            class="code"
+                                            type="text"
+                                        />
+                                    </td>
+                                    <td
+                                        class="color-button"
+                                        :class="{ 'text-light': isDarkColor(element.color) }"
+                                        :style="[(collections[selectedCollection].themes[0].colors.indexOf(element) < collections[selectedCollection].themes[selectedTheme].colors.length-1) ? {
+                                            backgroundColor: element.color, borderBottomColor: element.color
+                                        } : { backgroundColor: element.color }]"
+                                    >
+                                        <label>${ element.color }
+                                            <input
+                                                v-model="element.color"
+                                                type="color"
+                                            />
+                                        </label>
+                                    </td>
+                                    <td class="color-opacity code light"><input type="number" min="0" max="1" step="0.05" v-model="element.alpha" /></td>
+                                    <td class="color-widget">
+                                        <div v-if="selectedTheme == 0">
+                                            <span class="move icon" title="Reorder" aria-label="Reorder"></span>
+                                            <button
+                                                @click.stop="deleteColor(collections[selectedCollection].themes[0].colors.indexOf(element))"
+                                                class="delete icon"
+                                                title="Delete"
+                                                aria-label="Delete"
+                                            ></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                        <tbody v-else>
+                            <tr v-for="(color, index) in collections[selectedCollection].themes[selectedTheme].colors">
+                                <td class="color-name">
+                                    <input
+                                        @blur="resetNewColor(index)"
+                                        :readonly="selectedTheme > 0"
+                                        v-model="collections[selectedCollection].themes[0].colors[index].name"
+                                        type="text"
+                                    />
+                                </td>
+                                <td class="color-handle">
+                                    <input
+                                        :readonly="selectedTheme > 0"
+                                        v-if="newColor && (index == collections[selectedCollection].themes[selectedTheme].colors.length-1)"
+                                        v-model="newColorHandle"
+                                        class="code"
+                                        type="text"
+                                    />
+                                    <input
+                                        :readonly="selectedTheme > 0"
+                                        v-else
+                                        v-model="collections[selectedCollection].themes[0].colors[index].handle"
+                                        class="code"
+                                        type="text"
+                                    />
+                                </td>
+                                <td
+                                    class="color-button"
+                                    :class="{ 'text-light': isDarkColor(color.color) }"
+                                    :style="[(index < collections[selectedCollection].themes[selectedTheme].colors.length-1) ? {
+                                            backgroundColor: color.color, borderBottomColor: color.color
+                                        } : { backgroundColor: color.color }]"
+                                >
+                                    <label>${ color.color }
+                                        <input
+                                            v-model="collections[selectedCollection].themes[selectedTheme].colors[index].color"
+                                            type="color"
+                                        />
+                                    </label>
+                                    {#<button>#}
+                                    {#    ${ color.color }#}
+                                    {#</button>#}
+                                    <div v-if="(index > 0)" class="a11y-score">#.#</div>
+                                </td>
+                                <td class="color-opacity code light"><input type="number" min="0" max="1" step="0.05" :value="color.alpha" /></td>
+                                <td class="color-widget">
+                                    <div v-if="selectedTheme == 0">
+                                        <button class="move icon" title="Reorder" aria-label="Reorder"></button>
+                                        <button
+                                            @click.stop="deleteColor(index)"
+                                            class="delete icon"
+                                            title="Delete"
+                                            aria-label="Delete"
+                                        ></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button
+                        @click="createColor()"
+                        class="btn add icon"
+                        v-if="selectedTheme == 0"
+                    >Add a color</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-shade" :class="{ show: showModal }"></div>
+    <div @keyup.esc="modalClose()" class="clearbold-modal-wrapper" :class="{ show: showModal }">
+        <div class="modal fitted">
+            <div class="body">
+                <div class="field">
+                    <div class="heading">
+                        <label for="modal-item-name">Name</label>
+                    </div>
+                    <div class="instructions">What this ${ modalType } will be called in the control panel.</div>
+                    <div class="input">
+                        <input class="text fullwidth" @keyup.enter="modalSave()" v-model="modalName" type="text" id="modal-item-name" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="heading">
+                        <label for="modal-item-handle">Handle</label>
+                    </div>
+                    <div class="instructions">How you&rsquo;ll refer to this ${ modalType } in the templates.</div>
+                    <div class="input">
+                        <input class="text code fullwidth" @keyup.enter="modalSave()" v-if="modalNew" v-model="newHandle" type="text" id="modal-item-handle" autocomplete="off" />
+                        <input class="text code fullwidth" @keyup.enter="modalSave()" v-if="!modalNew" v-model="modalHandle" type="text" id="modal-item-handle" autocomplete="off" />
+                    </div>
+                </div>
+                <a
+                    @click="modalDelete()"
+                    :class="{ show: showModalDelete }"
+                    class="error left modal-delete"
+                    style="background: transparent; line-height: 30px;">
+                    Delete
+                </a>
+                <div class="buttons right" style="margin-top: 0;">
+                    <button @click="modalClose()" type="button" class="btn">Cancel</button>
+                    <button @click="modalSave()" type="submit" class="btn submit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{#{% js resources ~ "/js/lib/axios.js" %}#}
+{#{% js resources ~ "/js/lib/uuidv4.min.js" %}#}
+{#{% js resources ~ "/js/lib/vue.js" %}#}
+{#{% js resources ~ "/js/plugin.js" with {#}
+{#    type: 'module'#}
+{#} %}#}

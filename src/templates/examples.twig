@@ -1,48 +1,53 @@
-# Color Palette
+{% extends "_layouts/cp" %}
+{% set title = "Twig Examples"|t('craft-color-palette') %}
+{% set selectedSubnavItem = "examples" %}
 
-Configure color themes for your Craft CMS site. Select color themes for page or component styles via entry fields. Output CSS class names or color values in your templates.
+{% set crumbs = [
+    { label: 'Color Palette'|t('craft-color-palette'), url: url('colorpalette') }
+] %}
 
-## Roadmap
+{% do view.registerAssetBundle("clearbold\\colorpalette\\ColorPaletteBundle") %}
 
-* [ ] Import/export functionality
-* [ ] Display contrast scores for adjacent colors, for accessibility
-* [ ] Better color picker, incorporating alpha
-* [ ] UI enhancements
-
-## Twig Examples
-```
-<style>
+{% block content %}
+    <div class="clearbold-styles">
+        <div class="code code-block">
+{% verbatim %}
+<pre>&lt;style&gt;
 {% for color in entry.field.all() %}
     --color-{{ color.handle}}: {{ color.getHex() }};
 {% endfor %}
-</style>
+&lt;/style&gt;
 
 {# Outputs: #}
 
-<style>
+&lt;style&gt;
     --color-background: #CC4224;
     --color-text: #000000;
     --color-button: #2A75B3;
     --color-highlight: #F3D403;
-</style>
-```
+&lt;/style&gt;</pre>
+{% endverbatim %}
+        </div>
 
-```
-<style>
+        <div class="code code-block">
+{% verbatim %}
+<pre>&lt;style&gt;
     --color-background: {{ entry.field.handle('background').getRgb() }}
     --color-background-alpha: {{ entry.field.handle('background').getRgba() }}
-</style>
+&lt;/style&gt;
 
 {# Outputs: #}
 
-<style>
+&lt;style&gt;
     --color-background: rgb(204, 66, 36);
     --color-background-alpha: rgb(204, 66, 36, .5);
-</style>
-```
+&lt;/style&gt;</pre>
+{% endverbatim %}
+        </div>
 
-```
-<style>
+        <div class="code code-block">
+{% verbatim %}
+<pre>&lt;style&gt;
 {% set collections = craft.colorpalette.collections %}
 {# or #}
 {% for collection in craft.colorpalette.all() %}
@@ -55,28 +60,32 @@ Configure color themes for your Craft CMS site. Select color themes for page or 
 {% endfor %}
 {% endfor %}
 {% endfor %}
-</style>
+&lt;/style&gt;
 
 {# Outputs: #}
 
-<style>
+&lt;style&gt;
     --color-background: #CC4224;
     --color-text: #000000;
     --color-button: #2A75B3;
     --color-highlight: #F3D403;
-</style>
-```
+&lt;/style&gt;</pre>
+{% endverbatim %}
+        </div>
 
-```
-<div class="color-{{ entry.field.collection }} color-{{ entry.field.theme }}"></div>
+        <div class="code code-block">
+            {% verbatim %}
+<pre>&lt;div class="color-{{ entry.field.collection }} color-{{ entry.field.theme }}"&gt;&lt;/div&gt;
 
 {# Outputs #}
 
-<div class="color-heroes color-captainMarvel"></div>
-```
+&lt;div class="color-heroes color-captainMarvel"&gt;&lt;/div&gt;</pre>
+{% endverbatim %}
+        </div>
 
-```
-{% set collection = craft.colorpalette.handle('heroes') %}
+        <div class="code code-block">
+{% verbatim %}
+<pre>{% set collection = craft.colorpalette.handle('heroes') %}
 {% set theme = collection.handle('captainMarvel') %}
 {# or #}
 {% set collection = craft.colorpalette.collection('heroes') %}
@@ -84,33 +93,37 @@ Configure color themes for your Craft CMS site. Select color themes for page or 
 {# or #}
 {{ craft.colorpalette.collection('heroes').theme('captainMarvel').name }}
 
-<style>
+&lt;style&gt;
 {% for color in theme.colors %}
     --color-{{ color.handle}}: {{ color.getHex() }};
 {% endfor %}
-</style>
+&lt;/style&gt;
 
 {# Outputs: #}
 
-<style>
+&lt;style&gt;
     --color-background: #CC4224;
     --color-text: #000000;
     --color-button: #2A75B3;
     --color-highlight: #F3D403;
-</style>
+&lt;/style&gt;
 
 {# ~~~~~~~~ #}
 
 {% set color = theme.color('background') %}
 {# or #}
 {% set color = theme.handle('background') %}
-<style>
+&lt;style&gt;
     --color-background: {{ color.getRgb() }}
-</style>
+&lt;/style&gt;
 
 {# Outputs: #}
 
-<style>
+&lt;style&gt;
     --color-background: rgb(204, 66, 36);
-</style>
-```
+&lt;/style&gt;</pre>
+{% endverbatim %}
+        </div>
+
+    </div>
+{% endblock content %}

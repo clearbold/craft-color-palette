@@ -7,9 +7,22 @@
 
 namespace clearbold\colorpalette;
 
+use clearbold\colorpalette\fields\ColorPalette as ColorPaletteField;
+use clearbold\colorpalette\variables\ColorPaletteVariable;
+use clearbold\colorpalette\models\ColorPaletteModel;
+
 use Craft;
 use craft\base\Element;
+use craft\events\RegisterComponentTypesEvent;
+use craft\services\Fields;
 use craft\base\Plugin as BasePlugin;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
+
+//use craft\events\RegisterTemplateRootsEvent;
+//use craft\web\View;
+use craft\web\twig\variables\CraftVariable;
+use yii\base\Event;
 
 /**
  *
@@ -30,7 +43,7 @@ class Plugin extends BasePlugin
      */
     public static function t($message, $params = [], $language = null)
     {
-        return Craft::t('unisoncrm', $message, $params, $language);
+        return Craft::t('colorpalette', $message, $params, $language);
     }
 
     /**
@@ -41,7 +54,7 @@ class Plugin extends BasePlugin
     /**
      * @inheritdoc
      */
-    public $hasCpSettings = true;
+    public $hasCpSettings = false;
 
     /**
      * @inheritdoc
@@ -63,18 +76,28 @@ class Plugin extends BasePlugin
         parent::init();
         self::$plugin = $this;
 
-        $this->_setPluginComponents();
-        $this->_registerCpRoutes();
-        $this->_registerVariables();
+        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = ColorPaletteField::class;
+        });
 
-        // Craft::info(
-        //     Craft::t(
-        //         'colorpalette',
-        //         '{name} plugin loaded',
-        //         ['name' => $this->name]
-        //     ),
-        //     __METHOD__
-        // );
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('colorpalette', ColorPaletteModel::class);
+            }
+        );
+
+         Craft::info(
+             Craft::t(
+                 'colorpalette',
+                 '{name} plugin loaded',
+                 ['name' => $this->name]
+             ),
+             __METHOD__
+         );
     }
 
     /**
@@ -87,33 +110,11 @@ class Plugin extends BasePlugin
         $ret['label'] = Craft::t('colorpalette', 'Color Palette');
 
         $ret['subnav'] = [
-            'palettes' => ['label' => 'Palettes', 'url' => 'color-palette/index']
+            'configure' => ['label' => 'Configure', 'url' => 'colorpalette/index'],
+            'examples' => ['label' => 'Twig Examples', 'url' => 'colorpalette/examples'],
+            'css' => ['label' => 'CSS', 'url' => 'colorpalette/css']
         ];
 
         return $ret;
     }
-
-    /**
-     * Register CRM's project config event listeners
-     */
-    //private function _registerProjectConfigEventListeners()
-    //{
-    //    $projectConfigService = Craft::$app->getProjectConfig();
-    //
-    //    Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
-    //        $event->config['colorpalette'] = ProjectConfigData::rebuildProjectConfig();
-    //    });
-    //}
-
-    /**
-     * Register UnisonCRM’s template variable.
-     */
-    //private function _registerVariables()
-    //{
-    //    Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-    //        /** @var CraftVariable $variable */
-    //        // $variable = $event->sender;
-    //        // $variable->attachBehavior('colorpalette', CraftVariableBehavior::class);
-    //    });
-    //}
 }
