@@ -4,6 +4,7 @@ Configure color themes for your Craft CMS site. Select color themes for page or 
 
 ## Roadmap
 
+* [ ] Retain deleted collections & themes so they remain available to fields where they're selected
 * [ ] Import/export functionality
 * [ ] Display contrast scores for adjacent colors, for accessibility
 * [ ] Better color picker, incorporating alpha
